@@ -23,7 +23,5 @@ body {
   width: 150px;
   height: 20px;
   transform: rotate(270deg);
-  margin: 0 -50px;     
-  margin-top: 80px;
-  background: #626BA9;
+  margin: 80px -50px 0;
 }

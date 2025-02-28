@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (index > 0) {
                 const prevSlider = sliders[index - 1];
                 if (parseInt(this.value) > parseInt(prevSlider.value)) {
-                    this.style.background = "red";
+                    this.style.accentColor = "red";
                 } else {
-                    this.style.background = "";
+                    this.style.accentColor = "";
                 }
             }
         });

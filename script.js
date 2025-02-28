@@ -3,14 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sliders.forEach((slider, index) => {
         slider.addEventListener("input", function () {
-            if (index > 0) {
-                const prevSlider = sliders[index - 1];
-                if (parseInt(this.value) > parseInt(prevSlider.value)) {
-                    this.style.accentColor = "red";
+            sliders.forEach((s, i) => {
+                if (i > 0 && parseInt(sliders[i].value) > parseInt(sliders[i - 1].value)) {
+                    s.style.accentColor = "red"; // Turn red if exceeding previous
                 } else {
-                    this.style.accentColor = "";
+                    s.style.accentColor = ""; // Reset if within limit
                 }
-            }
+            });
         });
     });
 });

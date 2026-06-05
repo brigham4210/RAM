@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
     const starBtn = document.getElementById("star-btn");
+    const fontDownBtn = document.getElementById("font-down-btn");
+    const fontUpBtn = document.getElementById("font-up-btn");
+    const alignToggleBtn = document.getElementById("align-toggle-btn");
     const shuffleBtn = document.getElementById("shuffle-btn");
     const jumpInput = document.getElementById("jump-input");
     const jumpBtn = document.getElementById("jump-btn");
@@ -14,6 +17,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let cards = [];
     let currentIndex = 0;
     let starred = new Set();
+    let fontScale = 1;
+    let alignMode = "left";
+
+    const baseQuestionFontSize = Number.parseFloat(getComputedStyle(questionEl).fontSize) || 16;
+    const baseAnswerFontSize = Number.parseFloat(getComputedStyle(answerListEl).fontSize) || 16;
+
+    const applyFontScale = () => {
+        const questionSize = (baseQuestionFontSize * fontScale).toFixed(2);
+        const answerSize = (baseAnswerFontSize * fontScale).toFixed(2);
+        questionEl.style.fontSize = `${questionSize}px`;
+        answerListEl.style.fontSize = `${answerSize}px`;
+    };
+
+    const applyAlignment = () => {
+        const centered = alignMode === "center";
+        questionEl.style.textAlign = alignMode;
+        answerListEl.style.textAlign = alignMode;
+        answerListEl.style.listStylePosition = centered ? "inside" : "outside";
+        answerListEl.style.paddingLeft = centered ? "0" : "1.15rem";
+        alignToggleBtn.textContent = centered ? "Align: Center" : "Align: Left";
+    };
 
     const renderCard = () => {
         if (!cards.length) {
@@ -25,6 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const current = cards[currentIndex];
+        const visibleCardNumber = Number.parseInt(current.id, 10);
+        const currentCardNumber = Number.isNaN(visibleCardNumber) ? currentIndex + 1 : visibleCardNumber;
         questionEl.textContent = current.question;
 
         answerListEl.innerHTML = "";
@@ -34,11 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
             answerListEl.appendChild(li);
         });
 
-        cardPositionEl.textContent = `Card ${currentIndex + 1} of ${cards.length}`;
+        cardPositionEl.textContent = `Card ${currentCardNumber} of ${cards.length}`;
         starredCountEl.textContent = `Starred: ${starred.size}`;
         starBtn.classList.toggle("is-active", starred.has(current.id));
         starBtn.textContent = starred.has(current.id) ? "Starred" : "Star";
-        jumpInput.value = String(currentIndex + 1);
+        jumpInput.value = String(currentCardNumber);
+        jumpInput.placeholder = `Card ${currentCardNumber}`;
     };
 
     const resetFlip = () => {
@@ -71,14 +98,20 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const shuffleCards = () => {
-        if (!cards.length) return;
+        if (cards.length < 2) return;
 
         const currentId = cards[currentIndex].id;
         for (let i = cards.length - 1; i > 0; i -= 1) {
             const j = Math.floor(Math.random() * (i + 1));
             [cards[i], cards[j]] = [cards[j], cards[i]];
         }
-        currentIndex = cards.findIndex((card) => card.id === currentId);
+
+        // Ensure shuffle is visibly different immediately.
+        if (cards[0].id === currentId) {
+            [cards[0], cards[1]] = [cards[1], cards[0]];
+        }
+
+        currentIndex = 0;
         resetFlip();
         renderCard();
     };
@@ -87,12 +120,35 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!cards.length) return;
         const requested = Number.parseInt(jumpInput.value, 10);
         if (Number.isNaN(requested) || requested < 1 || requested > cards.length) {
-            jumpInput.value = String(currentIndex + 1);
+            const current = cards[currentIndex];
+            const visibleCardNumber = Number.parseInt(current.id, 10);
+            jumpInput.value = String(Number.isNaN(visibleCardNumber) ? currentIndex + 1 : visibleCardNumber);
             return;
         }
-        currentIndex = requested - 1;
+
+        const targetIndex = cards.findIndex((card) => Number.parseInt(card.id, 10) === requested);
+        if (targetIndex === -1) {
+            return;
+        }
+
+        currentIndex = targetIndex;
         resetFlip();
         renderCard();
+    };
+
+    const increaseFont = () => {
+        fontScale += 0.1;
+        applyFontScale();
+    };
+
+    const decreaseFont = () => {
+        fontScale -= 0.1;
+        applyFontScale();
+    };
+
+    const toggleAlignment = () => {
+        alignMode = alignMode === "left" ? "center" : "left";
+        applyAlignment();
     };
 
     const normalizeCards = (raw) => {
@@ -139,6 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
     nextBtn.addEventListener("click", nextCard);
     prevBtn.addEventListener("click", prevCard);
     starBtn.addEventListener("click", toggleStar);
+    fontUpBtn.addEventListener("click", increaseFont);
+    fontDownBtn.addEventListener("click", decreaseFont);
+    alignToggleBtn.addEventListener("click", toggleAlignment);
     shuffleBtn.addEventListener("click", shuffleCards);
     jumpBtn.addEventListener("click", jumpToCard);
     jumpInput.addEventListener("keydown", (event) => {
@@ -161,5 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    applyFontScale();
+    applyAlignment();
     loadCards();
 });

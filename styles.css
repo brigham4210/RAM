@@ -103,6 +103,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overflow: hidden;
 }
 
 .card-front {
@@ -130,6 +131,8 @@ body {
   flex: 1;
   display: flex;
   align-items: center;
+  min-height: 0;
+  overflow: auto;
 }
 
 .answer-list {
@@ -140,6 +143,7 @@ body {
   font-size: clamp(1.35rem, 2.3vw, 1.85rem);
   line-height: 1.25;
   flex: 1;
+  min-height: 0;
   align-content: start;
   overflow: auto;
 }

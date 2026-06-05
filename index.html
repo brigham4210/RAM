@@ -3,36 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RAM Model of Brother Christ</title>
-  <script src="script.js"></script>
+  <title>Naturalization Test Flash Cards</title>
+  <script src="quizzes-data.js"></script>
+  <script src="script.js" defer></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>R.A.M</h1>
-  <h2>Relationship Attachment Model</h2>
+  <main class="app-shell">
+    <header class="app-header">
+      <p class="eyebrow">USCIS 2025 Naturalization Test</p>
+      <h1>Naturalization Test</h1>
+      <p class="subtitle">Tap the card to reveal answers. Use arrow keys to move cards.</p>
+    </header>
 
-  <div class="slider-container">
-    <div class="stage">
-      <p>KNOW</p>
-      <input type="range" class="slider" value="50" >
-    </div>
-    <div class="stage">
-      <p>TRUST</p>
-      <input type="range" class="slider" value="40">
-    </div>
-    <div class="stage">
-      <p>RELY</p>
-      <input type="range" class="slider" value="30">
-    </div>
-    <div class="stage">
-      <p>COMMIT</p>
-      <input type="range" class="slider" value="20">
-    </div>
-    <div class="stage">
-      <p>TOUCH</p>
-      <input type="range" class="slider" value="10">
-    </div>
-  </div>
+    <section class="status-bar" aria-live="polite">
+      <span id="card-position">Card 1 of 128</span>
+      <span id="starred-count">Starred: 0</span>
+    </section>
 
+    <section class="card-stage">
+      <button id="flip-card" class="flashcard" aria-label="Flip flash card">
+        <div class="card-face card-front">
+          <p class="face-label">Question</p>
+          <p id="question-text" class="card-content"></p>
+        </div>
+        <div class="card-face card-back" aria-hidden="true">
+          <p class="face-label">Accepted Answers</p>
+          <ul id="answer-list" class="answer-list"></ul>
+        </div>
+      </button>
+    </section>
+
+    <section class="controls">
+      <button id="prev-btn" type="button">Previous</button>
+      <button id="shuffle-btn" type="button">Shuffle</button>
+      <button id="star-btn" type="button">Star</button>
+      <button id="next-btn" type="button">Next</button>
+    </section>
+
+    <section class="jump-controls">
+      <label for="jump-input">Jump to card #</label>
+      <input id="jump-input" type="number" min="1" step="1" inputmode="numeric" />
+      <button id="jump-btn" type="button">Go</button>
+    </section>
+  </main>
 </body>
 </html>
